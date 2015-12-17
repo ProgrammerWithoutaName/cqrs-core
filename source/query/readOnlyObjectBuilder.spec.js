@@ -1,14 +1,14 @@
-'use strict';
 import readOnlyObjectBuilderModule from 'inject!./readOnlyObjectBuilder';
 
 describe('readOnlyObjectBuilder', () => {
-  let inputs, readOnlyObjectBuilder;
+  let inputs;
+  let readOnlyObjectBuilder;
 
   beforeEach(() => {
     inputs = {
       mockClone: jasmine.createSpyObj('clone', ['execute']),
       mockDeepFreeze: jasmine.createSpyObj('deepFreeze', ['execute']),
-      mockDatasource: { foo: 'thing', id: 'datasource'},
+      mockDatasource: { foo: 'thing', id: 'datasource' },
       mockClonedDatasource: { id: 'clonedDatasource' }
     };
 
@@ -18,7 +18,6 @@ describe('readOnlyObjectBuilder', () => {
       '../objectUtilities/clone': inputs.mockClone,
       '../objectUtilities/deepFreeze': inputs.mockDeepFreeze
     }).default;
-
   });
 
   describe('buildDeepCopy', () => {
@@ -33,21 +32,21 @@ describe('readOnlyObjectBuilder', () => {
     });
 
     it('should return the clone of datasource', () => {
-      let results = readOnlyObjectBuilder.buildDeepCopy(inputs.mockDatasource);
+      const results = readOnlyObjectBuilder.buildDeepCopy(inputs.mockDatasource);
       expect(results).toBe(inputs.mockClonedDatasource);
     });
   });
 
   describe('build', () => {
     it('should return an object with the prototype set to the datasource', () => {
-      let results = readOnlyObjectBuilder.build(inputs.mockDatasource);
-      let noConstructor = function(){};
+      const results = readOnlyObjectBuilder .build(inputs.mockDatasource);
+      const noConstructor = function noConstructor() {};
       noConstructor.prototype = inputs.mockDatasource;
       expect(results instanceof noConstructor).toBe(true);
     });
 
     it('should return an object that is frozen', () => {
-      let results = readOnlyObjectBuilder.build(inputs.mockDatasource);
+      const results = readOnlyObjectBuilder.build(inputs.mockDatasource);
       expect(Object.isFrozen(results)).toBe(true);
     });
   });

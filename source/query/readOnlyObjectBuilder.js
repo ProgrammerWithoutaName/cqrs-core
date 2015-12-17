@@ -1,15 +1,14 @@
-'use strict';
 import clone from '../objectUtilities/clone';
 import deepFreeze from '../objectUtilities/deepFreeze';
 
-function buildDeepCopy(datasource){
-  let baseData = clone.execute(datasource);
+function buildDeepCopy(datasource) {
+  const baseData = clone.execute(datasource);
   deepFreeze.execute(baseData);
   return baseData;
 }
 
-function build(datasource){
-  let readOnly = Object.create(datasource);
+function build(datasource) {
+  const readOnly = Object.create(datasource);
   Object.freeze(readOnly);
   return readOnly;
 }

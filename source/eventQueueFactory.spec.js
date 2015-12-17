@@ -1,13 +1,14 @@
-'use strict';
-
 import eventQueueFactoryModule from 'inject?./externalDefinitions!./eventQueueFactory';
 
 describe('eventQueueFactory', () => {
-  let eventQueueFactory, eventQueue, externalDefinitions, mockQueue;
+  let eventQueueFactory;
+  let eventQueue;
+  let externalDefinitions;
+  let mockQueue;
 
   beforeEach(() => {
     externalDefinitions = {
-      Queue: function (){
+      Queue: function Queue() {
         mockQueue = this;
         mockQueue.push = () => {};
         mockQueue.flush = () => {};
@@ -25,14 +26,15 @@ describe('eventQueueFactory', () => {
   });
 
   describe('pushEvent', () => {
-    let given, inputs;
+    let given;
+    let inputs;
     beforeEach(() => {
       inputs = {
         eventName: 'foo',
-        eventData: {id: 'things'}
+        eventData: { id: 'things' }
       };
       eventQueue.pushEvent(inputs);
-      [ given ] = mockQueue.push.calls.mostRecent().args;
+      [given] = mockQueue.push.calls.mostRecent().args;
     });
     it('should push an event with the given name', () => {
       expect(given.eventName).toBe(inputs.eventName);
@@ -62,30 +64,29 @@ describe('eventQueueFactory', () => {
   });
 
   describe('flushEvents', () => {
-    let givenEventHandler, inputs;
+    let givenEventHandler;
+    let inputs;
 
     beforeEach(() => {
       inputs = {
         event: jasmine.createSpyObj('', ['event']),
-        eventData: {id: 'stuff'}
+        eventData: { id: 'stuff' }
       };
       inputs.event.eventName = 'foo';
 
       eventQueue.registerEventHandler(inputs.event);
       eventQueue.flushEvents();
-      [ givenEventHandler ] = mockQueue.flush.calls.mostRecent().args;
+      [givenEventHandler] = mockQueue.flush.calls.mostRecent().args;
     });
 
     it('should throw an error if the event is not defined', () =>
-      expect(() => givenEventHandler({eventName: 'nonExist', eventData: {}})).toThrow()
+      expect(() => givenEventHandler({ eventName: 'nonExist', eventData: {} })).toThrow()
     );
 
     it('should call the registered event handler with the given data if defined', () => {
-      givenEventHandler({eventName: inputs.event.eventName, eventData: inputs.eventData});
-      let [givenData] = inputs.event.event.calls.mostRecent().args;
+      givenEventHandler({ eventName: inputs.event.eventName, eventData: inputs.eventData });
+      const [givenData] = inputs.event.event.calls.mostRecent().args;
       expect(givenData).toBe(inputs.eventData);
     });
-
   });
-
 });
